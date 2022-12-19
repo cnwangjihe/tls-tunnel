@@ -1,0 +1,5 @@
+*.pem
+*.crt
+**/__pycache__
+venv
+conf.d
