@@ -59,7 +59,7 @@ def verify_sig(data: bytes, sig: bytes, pubkey: ec.EllipticCurvePublicKey):
     pubkey.verify(sig, data, ec.ECDSA(hashes.SHA256()))
 
 def verify_json_sig(data: dict, pubkey: ec.EllipticCurvePublicKey):
-    if abs(time.time() - data["data"]["timestamp"]) > TOLERATE_TIME:
+    if abs(time.time() * 1000 - data["data"]["timestamp"]) > TOLERATE_TIME:
         raise AppException("sig time limit exceeded.")
     sig = b64decode(data["sig"])
     raw = json.dumps(data["data"], sort_keys=True).encode()
