@@ -5,7 +5,7 @@ from struct import pack, unpack
 
 from proxy_protocol import pack_addr_info, proxy_protocol_packet
 from key_exchange import recv_exchange_packet, generate_exchange_packet, generate_shared_key
-from utils import load_ECDSA_privkey, to_bytes
+from utils import xor_ECDSA_privkey, load_ECDSA_privkey, to_bytes
 
 
 from cryptography.hazmat.primitives.asymmetric import ec
@@ -103,6 +103,7 @@ class TunnelServerThread(Thread):
         finally:
             tun.close()
             dst.close()
+
 class TunnelServer(Thread):
     def __init__(self, config: dict):
         super().__init__()
@@ -120,10 +121,13 @@ class TunnelServer(Thread):
         s.listen()
 
         with open(config["privkey"], "r") as f:
-            privkey = load_ECDSA_privkey(f.read())
+            privkey_raw = f.read()
+            if "privkey_password" in config:
+                privkey_raw = xor_ECDSA_privkey(privkey_raw, config["privkey_password"])
+            privkey = load_ECDSA_privkey(privkey_raw)
+
         with open(config["cert"], "r") as f:
             cert = f.read()
-        
 
         while True:
             conn, addr = s.accept()

@@ -19,6 +19,7 @@ mode = 0
 # must be signed by CA and not in revoke list
 cert = "./TLS_ca.crt"
 privkey = "./TLS_ca.pem"
+privkey_password = "YOUR_PRIVATE_KEY_PASSWORD"
 # local tcp addr, we will forward decrypted traffic to here
 dest = ["127.0.0.1", 8000]
 # listen addr

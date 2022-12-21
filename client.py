@@ -4,7 +4,7 @@ from typing import TypedDict
 from struct import pack, unpack
 
 from key_exchange import recv_exchange_packet, generate_exchange_packet, generate_shared_key
-from utils import to_bytes
+from utils import AppException, to_bytes
 
 
 from cryptography.hazmat.primitives.asymmetric import ec
@@ -39,7 +39,11 @@ class TunnelClientThread(Thread):
             xchg_privkey, raw_packet = generate_exchange_packet(1)
             tun.send(raw_packet)
             # verify server cert and msg sig
-            key_spec = recv_exchange_packet(tun, True)
+            try:
+                key_spec = recv_exchange_packet(tun, True)
+            except AppException:
+                logging.error("cert verify failed")
+                return
             if key_spec.uid != self.config["uid"]:
                 raise Exception("Cert common_name mismatch")
             server_iv, client_iv, aes_key = generate_shared_key(key_spec, xchg_privkey)
