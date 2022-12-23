@@ -14,7 +14,7 @@ import json
 import time
 import logging
 
-TOLERATE_TIME = 30
+TOLERATE_TIME = 30 * 1000
 PEM_PRIVKEY_HEADER = "-----BEGIN PRIVATE KEY-----"
 PEM_PRIVKEY_FOOTER = "-----END PRIVATE KEY-----"
 
