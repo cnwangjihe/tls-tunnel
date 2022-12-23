@@ -114,8 +114,8 @@ class TunnelClient(Thread):
         assert config["mode"] == 1
         bind_addr = config["listen"]
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        # s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         s.setblocking(True)
         s.bind(tuple(bind_addr))
         s.listen()
