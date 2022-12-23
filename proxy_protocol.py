@@ -6,7 +6,7 @@ import socket
 # 13: 0b 0010 0001 (v2 || PROXY)
 # 14: 0b 0001 0001 (AF_INET || TCP)
 # 15-16: \x0c\x00 (IPv4 addr len)
-HEADER = b"\x0D\x0A\x0D\x0A\x00\x0D\x0A\x51\x55\x49\x54\x0A\x21\x11\x0c\x00"
+HEADER = b"\x0D\x0A\x0D\x0A\x00\x0D\x0A\x51\x55\x49\x54\x0A\x21\x11\x00\x0c"
 
 # struct {        /* for TCP/UDP over IPv4, len = 12 */
 #             uint32_t src_addr;

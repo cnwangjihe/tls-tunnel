@@ -48,6 +48,10 @@ class TunnelServerThread(Thread):
             # connect to dst
             dst.connect(tuple(self.config["dest"]))
 
+            # send proxy_protocol header first
+            if self.config["proxy_protocol"]:
+                dst.send(proxy_protocol_packet(b"", self.config["addr_info"]))
+
             # for select, non-blocking is a better choice
             tun.setblocking(False)
             dst.setblocking(False)
@@ -79,13 +83,10 @@ class TunnelServerThread(Thread):
                         # have a full packet
                         if len(tun_recv_buf) - 4 < l:
                             break
-                        raw = cipher.decrypt(to_bytes(client_iv, 96), tun_recv_buf[4:][:l], None)
+                        # send decrypt data to dst socket
+                        dst_send_buf += cipher.decrypt(to_bytes(client_iv, 96), tun_recv_buf[4:][:l], None)
                         tun_recv_buf = tun_recv_buf[4+l:]
                         client_iv += 1
-                        if self.config["proxy_protocol"]:
-                            raw = proxy_protocol_packet(raw, self.config["addr_info"])
-                        # send decrypt data to dst socket
-                        dst_send_buf += raw
                 if dst in readable:
                     raw = dst.recv(0x1000)
                     if len(raw) == 0:
